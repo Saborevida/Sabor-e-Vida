@@ -50,9 +50,7 @@ jobs:
         with:
           args: deploy --prod --dir=dist # Comando de deploy para produção, apontando para a pasta dist
 
-          # Variáveis de ambiente que estarão disponíveis durante o runtime no Netlify (funções serverless, etc.)
-          # ATENÇÃO: Essas variáveis são para o ambiente do build e para funções serverless do Netlify.
-          # As chaves do Netlify CLI estão sendo passadas no 'env' dentro do passo 'Deploy to Netlify'.
+      # Variáveis de ambiente que estarão disponíveis durante o runtime no Netlify (funções serverless, etc.)
       env:
         SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
         SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
