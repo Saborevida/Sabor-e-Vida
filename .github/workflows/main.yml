@@ -36,17 +36,23 @@ jobs:
           # A SECRET_KEY do Stripe NUNCA deve estar aqui, apenas nas variáveis de ambiente do Netlify para funções serverless.
 
       - name: Deploy to Netlify
-        uses: nwtgmc/actions-netlify@v2 # Usa uma action do GitHub para integrar com o Netlify
-        with:
-          publish-dir: './dist' # Diretório de saída do build do Vite (geralmente 'dist/')
-          production-branch: main # A branch que aciona o deploy de produção
-          github-token: ${{ secrets.GITHUB_TOKEN }} # Token padrão do GitHub para acesso ao repositório
-          netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }} # Token pessoal de acesso ao Netlify
-          netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }} # ID do seu site no Netlify
+        uses: netlify/actions/cli@master # Usa a action oficial do Netlify CLI
         env:
-          # Variáveis de ambiente que estarão disponíveis durante o runtime no Netlify (funções serverless, etc.)
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-          STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
-          YOUR_DOMAIN: ${{ secrets.YOUR_DOMAIN }} # Sua URL de domínio
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }} # Seu token Netlify
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}     # Seu ID do site Netlify
+        with:
+          args: deploy --prod --dir=dist # Comando de deploy para produção, apontando para a pasta dist
+
+          # Remova estas variáveis daqui, elas foram movidas para a seção 'env' dentro da action acima:
+          # github-token: ${{ secrets.GITHUB_TOKEN }}
+          # netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          # netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
+
+      # Remova esta seção 'env' global se ela só contiver as variáveis que foram movidas para dentro da action netlify/actions/cli
+      # Se tiver outras variáveis globais, mantenha-as aqui.
+      # env:
+      #   SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      #   SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      #   STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+      #   STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
+      #   YOUR_DOMAIN: ${{ secrets.YOUR_DOMAIN }}
