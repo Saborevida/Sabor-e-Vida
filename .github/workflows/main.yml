@@ -1,53 +1,52 @@
- # .github/workflows/main.yml
-    # Este arquivo define um workflow do GitHub Actions para deploy contínuo no Netlify.
+# .github/workflows/main.yml
+# Este arquivo define um workflow do GitHub Actions para implantação contínua no Netlify.
 
-    name: Deploy Sabor & Vida to Netlify
+name: Deploy Sabor & Vida to Netlify
 
-    on:
-      push:
-        branches:
-          - main # O deploy será acionado sempre que houver um push na branch 'main'
+on:
+  push:
+    branches:
+      - main # O deploy será acionado sempre que houver um push na branch 'main'
 
-    jobs:
-      build_and_deploy:
-        runs-on: ubuntu-latest # O job será executado em uma máquina virtual Ubuntu
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest # O job será executado em uma máquina virtual Ubuntu
 
-        steps:
-          - name: Checkout Repository
-            uses: actions/checkout@v4 # Clona o repositório do GitHub na máquina virtual
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4 # Clona o repositório do GitHub na máquina virtual
 
-          - name: Setup Node.js
-            uses: actions/setup-node@v4
-            with:
-              node-version: '18' # Use a versão do Node.js compatível com seu projeto React/Vite
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18' # Use a versão do Node.js compatível com seu projeto React/Vite
 
-          - name: Install Dependencies
-            run: npm install # Instala as dependências do seu projeto (pacotes npm)
+      - name: Install Dependencies
+        run: npm install # Instala as dependências do seu projeto (pacotes npm)
 
-          - name: Build Project
-            # Comando de build para projetos Vite (geralmente `npm run build` que executa `vite build`)
-            run: npm run build
-            env:
-              # Variáveis de ambiente do Supabase e Stripe (apenas as publicáveis para o build do frontend)
-              VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-              VITE_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-              VITE_STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
-              # Para Vite, as variáveis de ambiente precisam ser prefixadas com VITE_ para serem expostas ao frontend.
-              # A SECRET_KEY do Stripe NUNCA deve estar aqui, apenas nas variáveis de ambiente do Netlify para funções serverless.
+      - name: Build Project
+        # Comando de build para projetos Vite (geralmente `npm run build` que executa `vite build`)
+        run: npm run build
+        env:
+          # Variáveis de ambiente do Supabase e Stripe (apenas as publicáveis para o build do frontend)
+          # Para Vite, as variáveis de ambiente precisam ser prefixadas com VITE_ para serem expostas ao frontend.
+          VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          VITE_STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
+          # A SECRET_KEY do Stripe NUNCA deve estar aqui, apenas nas variáveis de ambiente do Netlify para funções serverless.
 
-          - name: Deploy to Netlify
-            uses: nwtgmc/actions-netlify@v2 # Usa uma action do GitHub para integrar com o Netlify
-            with:
-              publish-dir: './dist' # Diretório de saída do build do Vite (geralmente 'dist/')
-              production-branch: main # A branch que aciona o deploy de produção
-              github-token: ${{ secrets.GITHUB_TOKEN }} # Token padrão do GitHub para acesso ao repositório
-              netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }} # Token pessoal de acesso ao Netlify
-              netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }} # ID do seu site no Netlify
-            env:
-              # Variáveis de ambiente que estarão disponíveis durante o runtime no Netlify (funções serverless, etc.)
-              SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-              SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-              STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-              STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
-              YOUR_DOMAIN: ${{ secrets.YOUR_DOMAIN }} # Sua URL de domínio
-    
+      - name: Deploy to Netlify
+        uses: nwtgmc/actions-netlify@v2 # Usa uma action do GitHub para integrar com o Netlify
+        with:
+          publish-dir: './dist' # Diretório de saída do build do Vite (geralmente 'dist/')
+          production-branch: main # A branch que aciona o deploy de produção
+          github-token: ${{ secrets.GITHUB_TOKEN }} # Token padrão do GitHub para acesso ao repositório
+          netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }} # Token pessoal de acesso ao Netlify
+          netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }} # ID do seu site no Netlify
+        env:
+          # Variáveis de ambiente que estarão disponíveis durante o runtime no Netlify (funções serverless, etc.)
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
+          YOUR_DOMAIN: ${{ secrets.YOUR_DOMAIN }} # Sua URL de domínio
