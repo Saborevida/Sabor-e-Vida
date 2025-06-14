@@ -34,9 +34,9 @@
               VITE_STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
               # Para Vite, as variáveis de ambiente precisam ser prefixadas com VITE_ para serem expostas ao frontend.
               # A SECRET_KEY do Stripe NUNCA deve estar aqui, apenas nas variáveis de ambiente do Netlify para funções serverless.
-
           - name: Deploy to Netlify
-            uses: nwtgmc/actions-netlify@v2.0 # Usa uma action do GitHub para integrar com o Netlify
+            uses: nwtgmc/actions-netlify@v2.0
+             # Usa uma action do GitHub para integrar com o Netlify
             with:
               publish-dir: './dist' # Diretório de saída do build do Vite (geralmente 'dist/')
               production-branch: main # A branch que aciona o deploy de produção
