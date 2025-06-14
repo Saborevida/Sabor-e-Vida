@@ -1,3 +1,6 @@
+# .github/workflows/main.yml
+# Este arquivo define um workflow do GitHub Actions para implantação contínua no Netlify.
+
 name: Deploy Sabor & Vida to Netlify
 
 on:
@@ -47,4 +50,3 @@ jobs:
       STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
       STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
       YOUR_DOMAIN: ${{ secrets.YOUR_DOMAIN }}
-
