@@ -35,6 +35,13 @@ jobs:
           VITE_STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
           # A SECRET_KEY do Stripe NUNCA deve estar aqui, apenas nas variáveis de ambiente do Netlify para funções serverless.
 
+      # --- NOVO PASSO: Linkar o Projeto Netlify ao Repositório ---
+      - name: Link Netlify Project
+        run: netlify link --id ${{ secrets.NETLIFY_SITE_ID }}
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }} # Necessário para autenticar o link
+      # --- FIM DO NOVO PASSO ---
+
       - name: Deploy to Netlify
         uses: netlify/actions/cli@master # Usa a action oficial do Netlify CLI
         env:
@@ -43,16 +50,12 @@ jobs:
         with:
           args: deploy --prod --dir=dist # Comando de deploy para produção, apontando para a pasta dist
 
-          # Remova estas variáveis daqui, elas foram movidas para a seção 'env' dentro da action acima:
-          # github-token: ${{ secrets.GITHUB_TOKEN }}
-          # netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          # netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
-
-      # Remova esta seção 'env' global se ela só contiver as variáveis que foram movidas para dentro da action netlify/actions/cli
-      # Se tiver outras variáveis globais, mantenha-as aqui.
-      # env:
-      #   SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-      #   SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-      #   STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-      #   STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
-      #   YOUR_DOMAIN: ${{ secrets.YOUR_DOMAIN }}
+          # Variáveis de ambiente que estarão disponíveis durante o runtime no Netlify (funções serverless, etc.)
+          # ATENÇÃO: Essas variáveis são para o ambiente do build e para funções serverless do Netlify.
+          # As chaves do Netlify CLI estão sendo passadas no 'env' dentro do passo 'Deploy to Netlify'.
+      env:
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+        STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
+        YOUR_DOMAIN: ${{ secrets.YOUR_DOMAIN }} # Sua URL de domínio
